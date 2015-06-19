@@ -1,29 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cloudecho</groupId>
+	<groupId>com.github.cloudecho</groupId>
 	<artifactId>xmlbean</artifactId>
 	<version>1.5.3</version>
 	<name>xmlbean</name>
+	<url>https://github.com/cloudecho/xmlbean</url>
 	<description>XML to JavaBean &amp; JavaBean to XML</description>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<organization>
+		<url>https://github.com/cloudecho</url>
+		<name>cloudecho</name>
+	</organization>
+	<developers>
+		<developer>
+			<name>yong.ma</name>
+			<email>maywide@qq.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<url>https://github.com/cloudecho.git</url>
+	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-  	<dependency>
-  		<groupId>commons-beanutils</groupId>
-  		<artifactId>commons-beanutils</artifactId>
-  		<version>1.8.0</version>
-  	</dependency>
-  </dependencies>
-	<url>https://github.com/cloudecho/xmlbean</url>
-	<organization>
-		<url>https://github.com/cloudecho</url>
-		<name>cloudecho</name>
-	</organization>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+	</dependencies>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 </project>
