@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.cloudecho</groupId>
 	<artifactId>xmlbean</artifactId>
-	<version>1.5.3</version>
+	<version>1.5.4</version>
 	<name>xmlbean</name>
 	<url>https://github.com/cloudecho/xmlbean</url>
 	<description>XML to JavaBean &amp; JavaBean to XML</description>
