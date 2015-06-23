@@ -1,5 +1,6 @@
 package org.xmlbean.example;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -17,7 +18,7 @@ public class XmlBeanDemo {
 	public static void main(String[] args) throws InstantiationException,
 			IllegalAccessException, DocumentException {
 		System.out.println("[xml]");
-		String xml = "<root userId=\"1001\"><userName>Tom</userName><address><addressId>2001</addressId>"
+		String xml = "<root userId=\"1001\" timestamp=\"2008-08-08T10:11:12\"><userName>Tom</userName><address><addressId>2001</addressId>"
 				+ "<addressName>China</addressName>address-info</address>"
 				+ "<linkphone>13450006000</linkphone><linkphone>13450006001</linkphone></root>";
 		System.out.println(xml);
@@ -39,10 +40,14 @@ public class XmlBeanDemo {
 	 * 字段与xml元素对应（由@ElementTag定义）
 	 */
 	public static class UserBean {
-		@ElementTag(name = "userId", attribute = true)
+		@ElementTag(attribute = true)
 		int userId;
 
-		@ElementTag(name = "userName")
+		// @ElementTag(nullable = true, format = "yyyy-MM-dd HH:mm:ss")
+		@ElementTag(attribute = true, nullable = true)
+		Date timestamp;
+
+		@ElementTag
 		String userName;
 
 		@ElementTag(name = "address")
@@ -50,6 +55,14 @@ public class XmlBeanDemo {
 
 		@ElementTag(name = "linkphone")
 		String[] linkphone;
+
+		public Date getTimestamp() {
+			return timestamp;
+		}
+
+		public void setTimestamp(Date timestamp) {
+			this.timestamp = timestamp;
+		}
 
 		public int getUserId() {
 			return userId;

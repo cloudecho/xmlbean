@@ -60,8 +60,8 @@ public class ElementVisitor extends VisitorSupport {
 			5);
 
 	@SuppressWarnings("unchecked")
-	private final Map<String, FieldParam>[] fieldParams = new Map[]{
-			arrayParams, stringArrayParams, listParams};
+	private final Map<String, FieldParam>[] fieldParams = new Map[] {
+			arrayParams, stringArrayParams, listParams };
 
 	/**
 	 * <tt>bean</tt>中List/Array/StringArray类型字段信息
@@ -230,8 +230,8 @@ public class ElementVisitor extends VisitorSupport {
 
 		Method setm = clazz.getMethod(
 				BeanUtilx.STRING_SET + PubUtils.toTitle(fieldName),
-				new Class<?>[]{fieldType});
-		setm.invoke(bean, new Object[]{value});
+				new Class<?>[] { fieldType });
+		setm.invoke(bean, new Object[] { value });
 	}
 
 	/**
@@ -407,9 +407,11 @@ public class ElementVisitor extends VisitorSupport {
 				try {
 					Method getm = clazz.getMethod(BeanUtilx.STRING_GET
 							+ PubUtils.toTitle(f.getName()));
+					final String eName = PubUtils.hasText(tag.name()) ? tag
+							.name() : f.getName();
 					if (getm.invoke(bean) == null)
 						throw new NullElementException("Missing element["
-								+ tag.name() + "]");
+								+ eName + "]");
 				} catch (ElementVisitingException e) {
 					throw e;
 				} catch (Exception e) {

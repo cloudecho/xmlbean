@@ -2,6 +2,7 @@ package org.xmlbean.util;
 
 import static org.xmlbean.util.DateUtils.PATTERN_DATESHORT;
 import static org.xmlbean.util.DateUtils.PATTERN_DATETIME;
+import static org.xmlbean.util.DateUtils.PATTERN_TIMESTAMP;
 import static org.xmlbean.util.DateUtils.PATTERN_DATETIME_COMPACT;
 import static org.xmlbean.util.DateUtils.PATTERN_DATE_COMPACT;
 import static org.xmlbean.util.DateUtils.PATTERN_DAYPATH;
@@ -137,7 +138,7 @@ public abstract class BeanUtilx {
 		else if (Short.class.equals(fieldType) || short.class.equals(fieldType))
 			return Short.valueOf(text);
 		else if (java.util.Date.class.equals(fieldType)) {// 尝试各种模式去解析
-			final String[] patterns = { PATTERN_DATETIME,
+			final String[] patterns = { PATTERN_TIMESTAMP, PATTERN_DATETIME,
 					PATTERN_DATETIME_COMPACT, PATTERN_DEFAULT,
 					PATTERN_DATE_COMPACT, PATTERN_DATESHORT, PATTERN_YEARMONTH,
 					PATTERN_DAYPATH };
@@ -168,7 +169,8 @@ public abstract class BeanUtilx {
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
-	public static String getValueString(Element element, Object bean) {
+	public static String getValueString(Element element, Object bean,
+			ElementTag tag) {
 		try {
 			Class<?> clazz = bean.getClass();
 			String fieldName = toFieldName(element.getName())
@@ -176,7 +178,7 @@ public abstract class BeanUtilx {
 			Method getm = clazz.getMethod(STRING_GET
 					+ PubUtils.toTitle(fieldName));
 			Object value = getm.invoke(bean);
-			return getText(getm.getReturnType(), value);
+			return getText(getm.getReturnType(), value, tag);
 		} catch (Exception e) {
 			return null;
 		}
@@ -239,7 +241,7 @@ public abstract class BeanUtilx {
 	}
 
 	/**
-	 * 根据对象的类型和值取得Xml元素文本.<br>
+	 * 根据对象的类型和值取得XML元素文本.<br>
 	 * <b>约定:</b>如果以下条件均满足,该方法返回<code>null</code>:<br>
 	 * <ul>
 	 * <li><code>value</code>不是<code>String</code>对象;
@@ -250,30 +252,32 @@ public abstract class BeanUtilx {
 	 * </ul>
 	 * 为保证<code>{@link XmlBeanFormatter.format()}</code>方法的正确执行,该约定必须被遵循.
 	 * 
-	 * @param clazz
+	 * @param valueType
 	 *            对象的类型
 	 * @param value
 	 *            对象的值
 	 */
-	public static String getText(Class<?> clazz, Object value) {
+	public static String getText(Class<?> valueType, Object value,
+			ElementTag tag) {
 		if (value == null) {
 			return "";
-		} else if (String.class.equals(clazz) || Long.class.equals(clazz)
-				|| long.class.equals(clazz) || Double.class.equals(clazz)
-				|| double.class.equals(clazz) || Integer.class.equals(clazz)
-				|| int.class.equals(clazz) || Character.class.equals(clazz)
-				|| char.class.equals(clazz) || Boolean.class.equals(clazz)
-				|| boolean.class.equals(clazz) || Byte.class.equals(clazz)
-				|| byte.class.equals(clazz) || Float.class.equals(clazz)
-				|| float.class.equals(clazz) || Short.class.equals(clazz)
-				|| short.class.equals(clazz)
-				|| java.sql.Date.class.equals(clazz)
-				|| java.sql.Timestamp.class.equals(clazz)) {
+		}
+		if (valueType == null) {
+			valueType = value.getClass();
+		}
+		if (String.class.equals(valueType) || valueType.isPrimitive()
+				|| Long.class.equals(valueType)
+				|| Double.class.equals(valueType)
+				|| Integer.class.equals(valueType)
+				|| Character.class.equals(valueType)
+				|| Boolean.class.equals(valueType)
+				|| Byte.class.equals(valueType)
+				|| Float.class.equals(valueType)
+				|| Short.class.equals(valueType)
+				|| java.sql.Timestamp.class.equals(valueType)) {
 			return value.toString();
-		} else if (java.util.Date.class.equals(clazz)) {
-			// TODO 模式选择(默认时间戳)
-			return DateUtils.formatDate((java.util.Date) value,
-					DateUtils.PATTERN_DATETIME_COMPACT);
+		} else if (java.util.Date.class.isAssignableFrom(valueType)) {
+			return DateUtils.formatDate((java.util.Date) value, tag.format());
 		} else {
 			return null; // 遵循约定
 		}

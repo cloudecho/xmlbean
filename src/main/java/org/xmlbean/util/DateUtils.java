@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *日期操作实用类。
+ * 日期操作实用类。
  */
 public abstract class DateUtils {
 	private static final String[] MONTHS_STRING = { "Jan", "Feb", "Mar", "Apr",
@@ -21,12 +21,17 @@ public abstract class DateUtils {
 	/**
 	 * 路径格式, <code>yyyy\MM\dd\</code>
 	 */
-	public static final String PATTERN_DAYPATH = "yyyy\\MM\\dd\\";
+	public static final String PATTERN_DAYPATH = "yyyy/MM/dd";
 
 	/**
 	 * 日期时间格式, <code>yyyy-MM-dd HH:mm:ss</code>, 24小时制
 	 */
 	public static final String PATTERN_DATETIME = "yyyy-MM-dd HH:mm:ss";
+
+	/**
+	 * 日期时间格式, <code>yyyy-MM-ddTHH:mm:ss</code>, 24小时制
+	 */
+	public static final String PATTERN_TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss";
 
 	/**
 	 * 无间隔符的日期时间格式, <code>yyyyMMddHHmmss</code>, 24小时制

@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
@@ -46,7 +45,7 @@ public class XmlBeanFormatter {
 	 * 将<code>bean</code>转换为<code>org.dom4j.Document</code>对象.
 	 */
 	public Element format() {
-		String eText = BeanUtilx.getText(bean.getClass(), bean);
+		String eText = BeanUtilx.getText(bean.getClass(), bean, null);
 		if (eText == null) {
 			format(bean.getClass());
 		} else {
@@ -64,9 +63,12 @@ public class XmlBeanFormatter {
 			for (Field f : clazz.getDeclaredFields()) {
 				ElementTag tag = f.getAnnotation(ElementTag.class);
 				// 可序列化判断
-				if (tag == null || !tag.serializable() || tag.attribute()
-						|| !PubUtils.hasText(tag.name()))
+				if (tag == null || !tag.serializable() || tag.attribute()) {
 					continue;
+				}
+				final String eName = PubUtils.hasText(tag.name()) ? tag.name()
+						: f.getName();
+
 				Class<?> fieldType = f.getType();
 				try {
 					Method getm = clazz.getDeclaredMethod("get"
@@ -74,21 +76,18 @@ public class XmlBeanFormatter {
 					Object value = getm.invoke(bean);
 					if (value == null) {
 						if (!tag.nullable())
-							element.addElement(tag.name());
+							element.addElement(eName);
 					} else if (fieldType.isArray()) {
 						for (Object v : (Object[]) value)
-							element.add(new XmlBeanFormatter(v, tag.name())
-									.format());
+							element.add(new XmlBeanFormatter(v, eName).format());
 					} else if (StringArray.class.equals(fieldType)) {
 						for (Object v : ((StringArray) value).getValue())
-							element.add(new XmlBeanFormatter(v, tag.name())
-									.format());
+							element.add(new XmlBeanFormatter(v, eName).format());
 					} else if (value instanceof List) {
 						for (Object v : (List<?>) value)
-							element.add(new XmlBeanFormatter(v, tag.name())
-									.format());
+							element.add(new XmlBeanFormatter(v, eName).format());
 					} else {
-						element.add(createElement(tag, fieldType, value));
+						element.add(createElement(tag, eName, fieldType, value));
 					}
 				} catch (Exception e) {
 					if (log.isWarnEnabled()) {
@@ -113,14 +112,14 @@ public class XmlBeanFormatter {
 	 *            <code>bean</code>中字段的值
 	 * @return <code>org.dom4j.Element</code>对象
 	 */
-	private Element createElement(ElementTag tag, Class<?> fieldType,
-			Object value) {
-		String eText = BeanUtilx.getText(fieldType, value);
+	private Element createElement(ElementTag tag, String eName,
+			Class<?> fieldType, Object value) {
+		String eText = BeanUtilx.getText(fieldType, value, tag);
 		if (eText == null) {
-			return new XmlBeanFormatter(value, tag.name()).format();
+			return new XmlBeanFormatter(value, eName).format();
 		} else {
-			return BeanUtilx.addText(tag,
-					DocumentHelper.createElement(tag.name()), eText);
+			return BeanUtilx.addText(tag, DocumentHelper.createElement(eName),
+					eText);
 		}
 	}
 
@@ -143,11 +142,17 @@ public class XmlBeanFormatter {
 				if (tag == null || !tag.attribute())
 					continue;
 				try {
-					String value = BeanUtils.getProperty(attribute,
-							field.getName());
-					element.addAttribute(tag.name(), value);
+					final String aName = PubUtils.hasText(tag.name()) ? tag
+							.name() : field.getName();
+					Method getm = clazz.getMethod(BeanUtilx.STRING_GET
+							+ PubUtils.toTitle(field.getName()));
+					String value = BeanUtilx.getText(null,
+							getm.invoke(attribute), tag);
+					element.addAttribute(aName, value);
 				} catch (Exception e) {
-					// do nothing
+					if (log.isErrorEnabled()) {
+						log.error("appendAttribute", e);
+					}
 				}
 			}
 			clazz = clazz.getSuperclass();
@@ -158,7 +163,7 @@ public class XmlBeanFormatter {
 	 * 添加虚拟元素<value/>文本
 	 */
 	private void appendValueText() {
-		String value = BeanUtilx.getValueString(element, bean);
+		String value = BeanUtilx.getValueString(element, bean, null);
 		if (value == null)
 			return;
 

@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.xmlbean.util.DateUtils;
+
 /**
  * 此注释用于标记JavaBean中的字段对应的Xml元素
  * 
@@ -20,9 +22,9 @@ public @interface ElementTag {
 	int order() default Integer.MAX_VALUE;
 
 	/**
-	 * Xml元素名称
+	 * Xml元素名称，缺省取字段名
 	 */
-	String name();
+	String name() default "";
 
 	/**
 	 * 元素是否可空(默认否)
@@ -70,4 +72,9 @@ public @interface ElementTag {
 	 * 是否元素属性（默认否）
 	 */
 	boolean attribute() default false;
+
+	/**
+	 * 日期/数字等格式
+	 */
+	String format() default DateUtils.PATTERN_TIMESTAMP;
 }
