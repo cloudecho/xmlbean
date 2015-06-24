@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.xmlbean.XmlBeanFormatter;
 import org.xmlbean.annotation.ElementTag;
 
 /**
@@ -250,7 +251,7 @@ public abstract class BeanUtilx {
 	 * <li><code>value</code>不是<code>java.util.Date</code>对象;
 	 * <li><code>value</code>不是简单数据类型(包括其包装类).
 	 * </ul>
-	 * 为保证<code>{@link XmlBeanFormatter.format()}</code>方法的正确执行,该约定必须被遵循.
+	 * 为保证<code>{@link XmlBeanFormatter#format()}</code>方法的正确执行,该约定必须被遵循.
 	 * 
 	 * @param valueType
 	 *            对象的类型
