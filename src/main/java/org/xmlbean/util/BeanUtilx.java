@@ -76,7 +76,7 @@ public abstract class BeanUtilx {
 	 * 取得元素文本
 	 */
 	public static String getText(Element element) {
-		return element.getTextTrim();
+		return element.getText();
 	}
 
 	/**
@@ -232,8 +232,8 @@ public abstract class BeanUtilx {
 	/**
 	 * 给元素添加文本
 	 */
-	public static Element addText(ElementTag tag, Element element, String text) {
-		if (tag != null && tag.cdata())
+	public static Element addText(Element element, String text, boolean isCdata) {
+		if (isCdata)
 			element.addCDATA(PubUtils.stripToEmpty(text));
 		else
 			element.addText(PubUtils.stripToEmpty(text));

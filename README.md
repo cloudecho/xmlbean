@@ -6,7 +6,7 @@ Maven:
 	<dependency>
 		<groupId>com.github.cloudecho</groupId>
 		<artifactId>xmlbean</artifactId>
-		<version>1.5.3</version>
+		<version>1.5.4</version>
 	</dependency>
 
 Usage:

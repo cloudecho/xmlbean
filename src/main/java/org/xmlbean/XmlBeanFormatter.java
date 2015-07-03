@@ -118,9 +118,13 @@ public class XmlBeanFormatter {
 		if (eText == null) {
 			return new XmlBeanFormatter(value, eName).format();
 		} else {
-			return BeanUtilx.addText(tag, DocumentHelper.createElement(eName),
-					eText);
+			return BeanUtilx.addText(DocumentHelper.createElement(eName),
+					eText, isCdata(tag));
 		}
+	}
+
+	private boolean isCdata(ElementTag tag) {
+		return tag != null && tag.cdata();
 	}
 
 	/**
@@ -169,10 +173,10 @@ public class XmlBeanFormatter {
 
 		Field field = BeanUtilx.getValueField(element, bean);
 		if (field == null) {
-			BeanUtilx.addText(null, element, value);
+			BeanUtilx.addText(element, value, false);
 		} else {
-			ElementTag tag = field.getAnnotation(ElementTag.class);
-			BeanUtilx.addText(tag, element, value);
+			BeanUtilx.addText(element, value,
+					String.class.equals(field.getType()));
 		}
 	}
 }

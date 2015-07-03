@@ -18,8 +18,8 @@ public class XmlBeanDemo {
 	public static void main(String[] args) throws InstantiationException,
 			IllegalAccessException, DocumentException {
 		System.out.println("[xml]");
-		String xml = "<root userId=\"1001\" timestamp=\"2008-08-08T10:11:12\"><userName>Tom</userName><address><addressId>2001</addressId>"
-				+ "<addressName>China</addressName>address-info</address>"
+		String xml = "<root userId=\"1001\" timestamp=\"2008-08-08T10:11:12\"><userName><![CDATA[Tom]]></userName><address><addressId>2001</addressId>"
+				+ "<addressName>China</addressName><![CDATA[address-info\naddress-info2]]></address>"
 				+ "<linkphone>13450006000</linkphone><linkphone>13450006001</linkphone></root>";
 		System.out.println(xml);
 
@@ -47,7 +47,7 @@ public class XmlBeanDemo {
 		@ElementTag(attribute = true, nullable = true)
 		Date timestamp;
 
-		@ElementTag
+		@ElementTag(cdata = true)
 		String userName;
 
 		@ElementTag(name = "address")
