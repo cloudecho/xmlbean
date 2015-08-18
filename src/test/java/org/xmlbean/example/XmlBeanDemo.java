@@ -53,7 +53,7 @@ public class XmlBeanDemo {
 		@ElementTag(name = "address")
 		AddressBean address;
 
-		@ElementTag(name = "linkphone")
+		@ElementTag(name = "linkphone", order = 1)
 		String[] linkphone;
 
 		public Date getTimestamp() {

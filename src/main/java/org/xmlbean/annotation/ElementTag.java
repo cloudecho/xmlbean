@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import org.xmlbean.util.DateUtils;
 
 /**
- * 此注释用于标记JavaBean中的字段对应的Xml元素
+ * 此注释用于标记JavaBean中的字段对应的XML元素
  * 
  * @since v1.0, 09/08/08
  */
@@ -16,13 +16,12 @@ import org.xmlbean.util.DateUtils;
 @Target(ElementType.FIELD)
 public @interface ElementTag {
 	/**
-	 * Xml元素序号(可重复,表示元素在Xml文档中的顺序,默认值<code>Integer.MAX_VALUE</code>)<br>
-	 * 暂时未启用
+	 * XML元素序号(可重复,表示元素在XML文档中的顺序,默认值<code>Integer.MAX_VALUE</code>)
 	 */
 	int order() default Integer.MAX_VALUE;
 
 	/**
-	 * Xml元素名称，缺省取字段名
+	 * XML元素名称，缺省取字段名
 	 */
 	String name() default "";
 

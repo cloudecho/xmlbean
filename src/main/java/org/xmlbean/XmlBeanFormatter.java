@@ -2,6 +2,8 @@ package org.xmlbean;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -24,6 +26,26 @@ public class XmlBeanFormatter {
 	private static final Log log = LogFactory.getLog(XmlBeanFormatter.class);
 	private Object bean;
 	private Element element;
+
+	private List<ElementGroup> children = new ArrayList<ElementGroup>();
+
+	/**
+	 * 根据order对子元素分组
+	 */
+	private static class ElementGroup implements Comparable<ElementGroup> {
+		final int order;
+		final List<Element> elements = new ArrayList<Element>();
+
+		ElementGroup(int order) {
+			super();
+			this.order = order;
+		}
+
+		@Override
+		public int compareTo(ElementGroup o) {
+			return this.order - o.order;
+		}
+	}
 
 	/**
 	 * 构造方法
@@ -51,8 +73,38 @@ public class XmlBeanFormatter {
 		} else {
 			element.addText(eText);
 		}
+		return collect();
+	}
 
-		return element;
+	private Element collect() {
+		Collections.sort(children);
+		for (ElementGroup g : children) {
+			for (Element e : g.elements) {
+				this.element.add(e);
+			}
+		}
+		return this.element;
+	}
+
+	/**
+	 * 添加子节点
+	 */
+	private void addChild(Element child, ElementTag tag) {
+		ElementGroup g = findGroup(tag.order());
+		if (g == null) {
+			g = new ElementGroup(tag.order());
+			children.add(g);
+		}
+		g.elements.add(child);
+	}
+
+	private ElementGroup findGroup(int order) {
+		for (ElementGroup g : children) {
+			if (g.order == order) {
+				return g;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -76,18 +128,31 @@ public class XmlBeanFormatter {
 					Object value = getm.invoke(bean);
 					if (value == null) {
 						if (!tag.nullable())
-							element.addElement(eName);
+							// element.addElement(eName);
+							addChild(DocumentHelper.createElement(eName), tag);
 					} else if (fieldType.isArray()) {
 						for (Object v : (Object[]) value)
-							element.add(new XmlBeanFormatter(v, eName).format());
+							// element.add(new XmlBeanFormatter(v,
+							// eName).format());
+							addChild(new XmlBeanFormatter(v, eName).format(),
+									tag);
 					} else if (StringArray.class.equals(fieldType)) {
 						for (Object v : ((StringArray) value).getValue())
-							element.add(new XmlBeanFormatter(v, eName).format());
+							// element.add(new XmlBeanFormatter(v,
+							// eName).format());
+							addChild(new XmlBeanFormatter(v, eName).format(),
+									tag);
 					} else if (value instanceof List) {
 						for (Object v : (List<?>) value)
-							element.add(new XmlBeanFormatter(v, eName).format());
+							// element.add(new XmlBeanFormatter(v,
+							// eName).format());
+							addChild(new XmlBeanFormatter(v, eName).format(),
+									tag);
 					} else {
-						element.add(createElement(tag, eName, fieldType, value));
+						// element.add(createElement(tag, eName, fieldType,
+						// value));
+						addChild(createElement(tag, eName, fieldType, value),
+								tag);
 					}
 				} catch (Exception e) {
 					if (log.isWarnEnabled()) {
